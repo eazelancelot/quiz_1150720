@@ -28,6 +28,7 @@ public class GlobalExceptionHandler {
 	 * 或 Exception 給攔截走。
 	 */
 
+	@SuppressWarnings("rawtypes")
 	// 1. 攔截 JSON 格式錯誤或型態轉換失敗（例如字串轉整數失敗）
 	@ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
@@ -35,6 +36,7 @@ public class GlobalExceptionHandler {
     }
 
 	// 1-1. 攔截 Query Param / Path Variable 型態轉換失敗
+	@SuppressWarnings("rawtypes")
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<ApiResponse> handleTypeMismatch(MethodArgumentTypeMismatchException e) {
         String fieldName = e.getName();
@@ -43,12 +45,14 @@ public class GlobalExceptionHandler {
     }
 
 	// 2. 攔截業務邏輯例外 (例如：結束日期早於開始日期、選擇題無選項)
+	@SuppressWarnings("rawtypes")
 	@ExceptionHandler({ IllegalArgumentException.class, RuntimeException.class })
 	public ResponseEntity<ApiResponse> handleRuntimeException(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(e.getMessage()));
     }
 
 	// 3. 攔截 @Valid 驗證失敗的例外 (如：標題為空)
+	@SuppressWarnings("rawtypes")
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ApiResponse> handleValidationException(MethodArgumentNotValidException e) {
         String defaultMessage = e.getBindingResult().getFieldError().getDefaultMessage();
@@ -56,6 +60,7 @@ public class GlobalExceptionHandler {
     }
 
 	// 4. 攔截其他未知的系統例外
+	@SuppressWarnings("rawtypes")
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse> handleGeneralException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
